@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Online</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .attendance-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .live-clock {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .btn-checkin {
+            background-color: #28a745;
+        }
+        .btn-checkout {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <!-- Kartu Absensi -->
+                <div class="card attendance-card p-4">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold">ABSENSI ONLINE</h3>
+                        <div class="live-clock" id="liveClock">--:--:--</div>
+                        <div class="text-muted" id="currentDate">Hari, DD Bulan YYYY</div>
+                    </div>
+
+                    <form id="attendanceForm">
+                        <div class="mb-3">
+                            <label for="employeeId" class="form-label">ID/Nama Karyawan</label>
+                            <input type="text" class="form-control" id="employeeId" placeholder="Masukkan ID atau Nama" required>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="button" class="btn btn-checkin btn-lg text-white" id="btnCheckin">
+                                <i class="fas fa-fingerprint me-2"></i> Absen Masuk
+                            </button>
+                            <button type="button" class="btn btn-checkout btn-lg text-white" id="btnCheckout" disabled>
+                                <i class="fas fa-sign-out-alt me-2"></i> Absen Pulang
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center text-muted small">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span id="locationStatus">Mendeteksi lokasi...</span>
+                    </div>
+                </div>
+
+                <!-- Riwayat Absensi (Opsional) -->
+                <div class="card mt-3 attendance-card p-3">
+                    <h6 class="fw-bold"><i class="fas fa-history me-2"></i>Riwayat Hari Ini</h6>
+                    <ul class="list-group list-group-flush" id="attendanceHistory">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Absen Masuk</span>
+                            <span class="text-success">08:00:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Absen Pulang</span>
+                            <span class="text-danger">17:00:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script Custom -->
+    <script>
+        // Update waktu real-time
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            const dateStr = now.toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            document.getElementById('liveClock').textContent = timeStr;
+            document.getElementById('currentDate').textContent = dateStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Simulasi deteksi lokasi
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                document.getElementById('locationStatus').textContent = "Lokasi: Dikenali";
+            },
+            (error) => {
+                document.getElementById('locationStatus').textContent = "Lokasi: Tidak terdeteksi";
+            }
+        );
+
+        // Simulasi absensi
+        document.getElementById('btnCheckin').addEventListener('click', function() {
+            const employeeId = document.getElementById('employeeId').value;
+            if (!employeeId) {
+                alert("Masukkan ID/Nama terlebih dahulu!");
+                return;
+            }
+            alert(`Absen masuk berhasil untuk ${employeeId}`);
+            this.disabled = true;
+            document.getElementById('btnCheckout').disabled = false;
+        });
+
+        document.getElementById('btnCheckout').addEventListener('click', function() {
+            alert("Absen pulang berhasil!");
+            this.disabled = true;
+        });
+    </script>
+</body>
+</html>
